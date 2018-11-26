@@ -39,6 +39,6 @@ class ResourceCollection extends IlluminateResourceCollection
      */
     public function with($request)
     {
-        return ['code' => 0, 'message' => 'OK'];
+        return ['code' => 200, 'message' => 'OK'];
     }
 }
