@@ -66,31 +66,51 @@ if (! function_exists('is_json')) {
     }
 }
 
-if (! function_exists('checked')) {
-    function checked($checked, $current = true)
+if (! function_exists('instance_of_domain')) {
+    /**
+     * $subject是否为$domains中某一个域名，或者是子域名
+     *
+     * @param string $subject
+     * @param array|string $domains
+     * @return bool
+     */
+    function instance_of_domain($subject, $domains)
     {
-        return html_checked_selected($checked, $current, 'checked');
+        if (is_url($subject)) {
+            $subject = parse_url($subject, PHP_URL_HOST);
+        }
+
+        $domains = (array) $domains;
+
+        return in_array($subject, $domains) || is_subdomain_of($subject, $domains);
     }
 }
 
-if (! function_exists('selected')) {
-    function selected($selected, $current = true)
+if (! function_exists('is_subdomain_of')) {
+    /**
+     * $subject是否为$domains中某一个域的子域名
+     *
+     * @param string $subject
+     * @param array|string $domains
+     * @return bool
+     */
+    function is_subdomain_of($subject, $domains)
     {
-        return html_checked_selected($selected, $current, 'selected');
-    }
-}
+        if (is_url($subject)) {
+            $subject = parse_url($subject, PHP_URL_HOST);
+        }
 
-if (! function_exists('disabled')) {
-    function disabled($disabled, $current = true)
-    {
-        return html_checked_selected($disabled, $current, 'disabled');
-    }
-}
+        foreach ((array) $domains as $domain) {
+            $parentDomain = ".{$domain}";
+            $len = strlen($parentDomain);
 
-if (! function_exists('html_checked_selected')) {
-    function html_checked_selected($compare, $current, $type)
-    {
-        return (string) $compare === (string) $current ? " $type='$type'" : '';
+            // 判断是否以 $parentDomain 作为后缀，若是，则为子域名
+            if (substr($subject, -$len) == $parentDomain) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
@@ -509,7 +529,7 @@ if (! function_exists('image_url')) {
 
 if (! function_exists('is_url')) {
     /**
-     * 判断是否为链接
+     * 判断是否为链接（域名出现下划线时，会误判）
      *
      * @param string $value
      * @return bool
