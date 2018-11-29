@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace Eddic\Support\Exceptions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException as NotFoundException;
 use Illuminate\Support\Arr;

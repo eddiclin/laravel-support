@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Eddic\Support\Exceptions\ModelNotFoundException;
 use Illuminate\Http\File;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
@@ -744,7 +744,7 @@ if (! function_exists('invalidation')) {
  * @param string $model
  * @param int|array $ids
  * @param bool $returnException 是否返回异常，默认为 false
- * @return \Illuminate\Http\JsonResponse|\Illuminate\Database\Eloquent\ModelNotFoundException
+ * @return \Eddic\Support\Exceptions\ModelNotFoundException|\Illuminate\Http\JsonResponse
  */
 function not_found($model, $ids, $returnException = false)
 {
