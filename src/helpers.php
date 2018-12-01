@@ -1,6 +1,7 @@
 <?php
 
 use Eddic\Support\Exceptions\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\File;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
@@ -697,6 +698,19 @@ if (! function_exists('cache_many')) {
         Cache::putMany($caches, $minutes);
 
         return $results;
+    }
+}
+
+if (! function_exists('eloquent_collect')) {
+    /**
+     * 创建一个 Eloquent Collection
+     *
+     * @param mixed $value
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    function eloquent_collect($value = null)
+    {
+        return new Collection($value);
     }
 }
 
