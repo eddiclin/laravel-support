@@ -3,6 +3,7 @@
 use Eddic\Support\Exceptions\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -409,12 +410,12 @@ if (! function_exists('random_filename')) {
     /**
      * 获取随机生成的文件名（10位随机数）
      *
-     * @param mixed $param 文件扩展名，如果参数为`\Illuminate\Http\UploadedFile`对象，通过getExtension获取
+     * @param \Illuminate\Http\UploadedFile|string $param 文件扩展名，如果为`UploadedFile`对象，则通过 extension 方法获取
      * @return string
      */
     function random_filename($param = null)
     {
-        if ($param instanceof \Illuminate\Http\UploadedFile) {
+        if ($param instanceof UploadedFile) {
             $extension = $param->extension();
         } else {
             $extension = (string) $param;
@@ -471,16 +472,18 @@ if (! function_exists('upload_image')) {
     /**
      * 上传图片
      *
-     * @param string $key
+     * @param \Illuminate\Http\UploadedFile|string $file
      * @param string $type 图片类型，不同类型存放于不同的目录，默认为 image
      * @param int $height 以 height 为最大高度，等比例缩小图片；为0时，不缩放
      * @return false|string
      */
-    function upload_image($key, $type = 'image', $height = 0)
+    function upload_image($file, $type = 'image', $height = 0)
     {
-        $request = request();
+        // 如果是字符串，则表示为上传文件的字段名
+        if (is_string($file)) {
+            $file = request()->file($file);
+        }
 
-        $file = $request->file($key);
         $path = $file->storeAs(upload_path($type), random_filename($file), ['disk' => 'public']);
 
         // 等比例缩小
